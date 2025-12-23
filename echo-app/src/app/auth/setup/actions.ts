@@ -31,18 +31,16 @@ export async function createFamily(formData: FormData) {
     const displayName = formData.get('displayName') as string || 'Member'
     const familyName = `${displayName}'s Family`
 
-    const { data: family, error: familyError } = await supabase
-        .from('families')
-        // @ts-expect-error
+    const { data: family, error: familyError } = await (supabase
+        .from('families') as any)
         .insert({ name: familyName })
         .select()
         .single()
 
     if (familyError) throw familyError
 
-    const { error: profileError } = await supabase
-        .from('profiles')
-        // @ts-expect-error
+    const { error: profileError } = await (supabase
+        .from('profiles') as any)
         .upsert({
             id: user.id,
             family_id: (family as any).id,
@@ -63,9 +61,8 @@ export async function joinFamily(formData: FormData) {
     const familyId = formData.get('familyId') as string
     const displayName = formData.get('displayName') as string || 'Member'
 
-    const { error: profileError } = await supabase
-        .from('profiles')
-        // @ts-expect-error
+    const { error: profileError } = await (supabase
+        .from('profiles') as any)
         .upsert({
             id: user.id,
             family_id: familyId,
