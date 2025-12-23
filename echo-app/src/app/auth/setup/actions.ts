@@ -45,7 +45,7 @@ export async function createFamily(formData: FormData) {
         // @ts-expect-error
         .upsert({
             id: user.id,
-            family_id: family.id,
+            family_id: (family as any).id,
             display_name: displayName,
             current_vibe: 'Neutral'
         })
