@@ -275,7 +275,8 @@ export async function notifyConnectionCompleteAction(checkinId: string, familyId
             ai_topic: { ...checkin.ai_topic, timer_notified: true }
         })
         .eq('id', checkinId)
-        .eq('ai_topic', checkin.ai_topic) // ONLY if nothing changed since we read it
+        // Race Protection: Only match if timer_notified is effectively null/missing
+        .is('ai_topic->timer_notified', null)
         .select()
 
     if (updateError) {
