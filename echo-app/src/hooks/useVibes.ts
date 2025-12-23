@@ -80,6 +80,7 @@ export function useVibes(userFamilyId: string, currentUserId: string) {
 
         if (error) {
             console.error('Error updating vibe:', error)
+            alert(`Vibe Update Failed: ${error.message}`)
             // Rollback?
         }
     }

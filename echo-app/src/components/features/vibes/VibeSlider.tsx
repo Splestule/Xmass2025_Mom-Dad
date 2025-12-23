@@ -63,8 +63,8 @@ export function VibeSlider({ currentVibe, onVibeChange, onDrag }: VibeSliderProp
     const labelIndex = Math.min(Math.max(Math.round(sliderValue), 0), 4)
 
     return (
-        <div className="w-full max-w-sm mx-auto space-y-6 pt-4">
-            <div className="text-center h-8">
+        <div className="w-full max-w-sm mx-auto space-y-4 pt-2">
+            <div className="text-center h-6">
                 <motion.p
                     key={vibes[labelIndex]}
                     initial={{ opacity: 0, y: 10 }}
@@ -75,7 +75,7 @@ export function VibeSlider({ currentVibe, onVibeChange, onDrag }: VibeSliderProp
                 </motion.p>
             </div>
 
-            <div className="relative w-full h-12 flex items-center justify-center">
+            <div className="relative w-full h-10 flex items-center justify-center">
                 <input
                     type="range"
                     min="0"
@@ -116,8 +116,8 @@ export function VibeSlider({ currentVibe, onVibeChange, onDrag }: VibeSliderProp
             </div>
 
             <div className="flex justify-between px-1">
-                <span className="text-[10px] uppercase text-stone-600 font-bold tracking-widest">Disconnect</span>
-                <span className="text-[10px] uppercase text-stone-600 font-bold tracking-widest">Flow</span>
+                <span className="text-[10px] uppercase text-stone-600 font-bold tracking-widest">Disconnected</span>
+                <span className="text-[10px] uppercase text-stone-600 font-bold tracking-widest">In Flow</span>
             </div>
         </div>
     )

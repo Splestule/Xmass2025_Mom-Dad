@@ -34,6 +34,7 @@ export type Database = {
                     sender_id: string
                     message: string
                     is_read: boolean
+                    is_saved: boolean
                 }
                 Insert: {
                     id?: string
@@ -42,6 +43,7 @@ export type Database = {
                     sender_id: string
                     message: string
                     is_read?: boolean
+                    is_saved?: boolean
                 }
                 Update: {
                     id?: string
@@ -50,6 +52,36 @@ export type Database = {
                     sender_id?: string
                     message?: string
                     is_read?: boolean
+                    is_saved?: boolean
+                }
+            }
+            scheduled_talks: {
+                Row: {
+                    id: string
+                    created_at: string
+                    family_id: string
+                    initiator_id: string
+                    theme: string
+                    scheduled_at: string
+                    status: string | null
+                }
+                Insert: {
+                    id?: string
+                    created_at?: string
+                    family_id: string
+                    initiator_id: string
+                    theme: string
+                    scheduled_at: string
+                    status?: string | null
+                }
+                Update: {
+                    id?: string
+                    created_at?: string
+                    family_id?: string
+                    initiator_id?: string
+                    theme?: string
+                    scheduled_at?: string
+                    status?: string | null
                 }
             }
             profiles: {

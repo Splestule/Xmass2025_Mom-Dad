@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Digital Sanctuary Palette */
+  --background: #FDFBF7;
+  /* Warm Cream */
+  --foreground: #292524;
+  /* Soft Black */
+
+  --primary: #D4A373;
+  /* Soft Terracotta/Sand */
+  --primary-foreground: #ffffff;
+
+  --secondary: #CCD5AE;
+  /* Muted Sage */
+  --secondary-foreground: #292524;
+
+  --accent: #E9EDC9;
+  /* Soft Lemon/Cream */
+  --accent-foreground: #292524;
+
+  --muted: #E7E5E4;
+  /* Warm Grey */
+  --muted-foreground: #78716C;
+
+  --card: rgba(255, 255, 255, 0.6);
+  --card-foreground: #292524;
+
+  --border: rgba(255, 255, 255, 0.4);
+  --input: rgba(0, 0, 0, 0.05);
+
+  --radius: 1.5rem;
+  /* 24px - Rounded 3xl feel */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.text-balance {
+  text-wrap: balance;
 }

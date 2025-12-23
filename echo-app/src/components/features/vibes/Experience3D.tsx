@@ -150,7 +150,7 @@ function Orb3D({
     })
 
     return (
-        <group position={position} visible={opacity > 0.01}>
+        <group position={position}>
             <mesh
                 ref={meshRef}
                 onClick={(e) => {
@@ -193,17 +193,19 @@ function Orb3D({
                 </mesh>
             )}
 
-            <Trail
-                width={2 * opacity}
-                length={8}
-                color={color}
-                attenuation={(t) => t * t}
-            >
-                <mesh visible={false}>
-                    <sphereGeometry args={[0.4, 16, 16]} />
-                    <meshBasicMaterial />
-                </mesh>
-            </Trail>
+            {opacity > 0.01 && (
+                <Trail
+                    width={2 * opacity}
+                    length={8}
+                    color={color}
+                    attenuation={(t) => t * t}
+                >
+                    <mesh visible={false}>
+                        <sphereGeometry args={[0.4, 16, 16]} />
+                        <meshBasicMaterial />
+                    </mesh>
+                </Trail>
+            )}
 
             {presenceGlows.map((glow, i) => (
                 <GlowSphere
@@ -214,18 +216,19 @@ function Orb3D({
                     onRead={onGlowRead}
                     interactive={!!onGlowRead && glow.status !== 'exiting'}
                     status={glow.status}
+                    parentOpacity={opacity}
                 />
             ))}
         </group>
     )
 }
 
-function GlowSphere({ glow, index, total, onRead, interactive, status }: { glow: Glow, index: number, total: number, onRead?: (id: string, message: string) => void, interactive: boolean, status: GlowStatus }) {
+function GlowSphere({ glow, index, total, onRead, interactive, status, parentOpacity = 1 }: { glow: Glow, index: number, total: number, onRead?: (id: string, message: string) => void, interactive: boolean, status: GlowStatus, parentOpacity?: number }) {
     const groupRef = useRef<THREE.Group>(null)
     const meshRef = useRef<THREE.Mesh>(null)
     const [hovered, setHovered] = useState(false)
 
-    const currentOpacity = useRef(0.8)
+    const currentOpacity = useRef(0) // Start invisible for fade-in!
     const currentScale = useRef(1.0)
 
     // Unique orbit physics for each glow
@@ -246,7 +249,10 @@ function GlowSphere({ glow, index, total, onRead, interactive, status }: { glow:
         if (!groupRef.current || !meshRef.current) return
         const t = clock.getElapsedTime()
 
-        const targetOpacity = status === 'exiting' ? 0 : 0.8
+        // Combine exit status opacity with parent's view opacity
+        const statusScale = status === 'exiting' ? 0 : 0.8
+        const targetOpacity = statusScale * parentOpacity
+
         const targetScale = (hovered && interactive) ? 1.5 : 1.0
 
         currentOpacity.current += (targetOpacity - currentOpacity.current) * 0.1
@@ -299,17 +305,19 @@ function GlowSphere({ glow, index, total, onRead, interactive, status }: { glow:
                     transparent
                 />
 
-                <Trail
-                    width={0.25}
-                    length={4}
-                    color="#fbbf24"
-                    attenuation={(t) => t * t}
-                >
-                    <mesh visible={false}>
-                        <sphereGeometry args={[0.01, 8, 8]} />
-                        <meshBasicMaterial />
-                    </mesh>
-                </Trail>
+                {parentOpacity > 0.01 && (
+                    <Trail
+                        width={0.25}
+                        length={4}
+                        color="#fbbf24"
+                        attenuation={(t) => t * t}
+                    >
+                        <mesh visible={false}>
+                            <sphereGeometry args={[0.01, 8, 8]} />
+                            <meshBasicMaterial />
+                        </mesh>
+                    </Trail>
+                )}
             </mesh>
         </group>
     )
@@ -427,7 +435,7 @@ function Scene({ myVibe, partnerVibe, myScoreOverride, glows, onGlowRead, focuse
 
 export default function Experience3D({ focusedView, onOrbClick, currentUserId, ...props }: Experience3DProps & { currentUserId: string }) {
     return (
-        <div className="h-[60vh] w-full relative overflow-hidden">
+        <div className="h-[50vh] w-full relative overflow-hidden">
             <Canvas
                 camera={{ position: [0, 5, 8], fov: 45 }}
                 onPointerMissed={() => onOrbClick('overview')}

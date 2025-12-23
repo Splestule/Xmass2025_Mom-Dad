@@ -3,67 +3,82 @@
 import { useState } from 'react'
 import { createFamily, joinFamily } from '@/app/auth/setup/actions'
 import { signout } from '@/app/auth/signout/actions'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { cn } from '@/utils/cn'
 
 export function SetupForm({ userEmail }: { userEmail: string }) {
     const [mode, setMode] = useState<'create' | 'join'>('create')
 
     return (
-        <div className="bg-white p-8 rounded-xl shadow-lg space-y-6 max-w-md w-full text-left" suppressHydrationWarning>
-            <div className="space-y-2 text-center">
-                <h1 className="text-2xl font-serif text-stone-900">Complete Your Setup</h1>
-                <p className="text-stone-600 text-sm">You're signed in as <span className="font-semibold">{userEmail}</span>, but not linked to a family yet.</p>
-            </div>
-
-            <div className="flex gap-4 p-1 bg-stone-100 rounded-lg">
-                <button
-                    onClick={() => setMode('create')}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'create' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-700'}`}
-                >
-                    Create New Space
-                </button>
-                <button
-                    onClick={() => setMode('join')}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'join' ? 'bg-white shadow-sm text-stone-900' : 'text-stone-500 hover:text-stone-700'}`}
-                >
-                    Join Existing
-                </button>
-            </div>
-
-            <form action={mode === 'create' ? createFamily : joinFamily} className="space-y-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-stone-900 uppercase tracking-wider">Display Name</label>
-                    <input
-                        name="displayName"
-                        required
-                        placeholder="Dad"
-                        className="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent text-stone-900 placeholder:text-stone-400"
-                    />
+        <Card className="max-w-md w-full mx-auto animate-in fade-in zoom-in duration-500">
+            <CardHeader className="text-center space-y-2">
+                <CardTitle>Complete Your Setup</CardTitle>
+                <p className="text-muted-foreground text-sm">
+                    Refuge for <span className="font-semibold text-foreground">{userEmail}</span>.
+                </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div className="flex p-1 bg-muted/50 rounded-full">
+                    <button
+                        onClick={() => setMode('create')}
+                        className={cn(
+                            "flex-1 py-2 text-sm font-medium rounded-full transition-all",
+                            mode === 'create'
+                                ? "bg-white text-primary shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        Create Sanctuary
+                    </button>
+                    <button
+                        onClick={() => setMode('join')}
+                        className={cn(
+                            "flex-1 py-2 text-sm font-medium rounded-full transition-all",
+                            mode === 'join'
+                                ? "bg-white text-primary shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        Join Sanctuary
+                    </button>
                 </div>
 
-                {mode === 'join' && (
+                <form action={mode === 'create' ? createFamily : joinFamily} className="space-y-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-stone-900 uppercase tracking-wider">Family ID</label>
-                        <input
-                            name="familyId"
+                        <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">Display Name</label>
+                        <Input
+                            name="displayName"
                             required
-                            placeholder="UUID..."
-                            className="w-full px-4 py-3 bg-white border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent text-stone-900 placeholder:text-stone-400"
+                            placeholder="e.g. Dad, Mom, Partner"
                         />
                     </div>
-                )}
 
-                <button className="w-full py-3 bg-stone-800 hover:bg-stone-700 text-white rounded-xl font-medium shadow-lg transition-all">
-                    {mode === 'create' ? 'Create Space' : 'Join Space'}
-                </button>
-            </form>
+                    {mode === 'join' && (
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider ml-1">Family ID</label>
+                            <Input
+                                name="familyId"
+                                required
+                                placeholder="Paste the UUID here..."
+                            />
+                        </div>
+                    )}
 
-            <div className="border-t border-stone-100 pt-4 text-center">
-                <form action={signout}>
-                    <button className="text-xs text-stone-400 hover:text-stone-600 uppercase tracking-widest">
-                        Sign Out
-                    </button>
+                    <Button className="w-full text-lg h-12">
+                        {mode === 'create' ? 'Create Space' : 'Join Space'}
+                    </Button>
                 </form>
-            </div>
-        </div>
+
+                <div className="border-t border-border pt-4 text-center">
+                    <form action={signout}>
+                        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+                            Sign Out
+                        </Button>
+                    </form>
+                </div>
+            </CardContent>
+        </Card>
     )
 }
