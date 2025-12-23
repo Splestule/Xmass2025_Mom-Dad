@@ -77,7 +77,7 @@ export async function signup(formData: FormData) {
             if (familyError) {
                 return redirect('/signup?error=Could not create family')
             }
-            targetFamilyId = familyData.id
+            targetFamilyId = (familyData as any).id
         }
 
         const { error: profileError } = await supabase
