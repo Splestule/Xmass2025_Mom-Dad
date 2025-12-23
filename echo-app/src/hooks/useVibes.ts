@@ -24,8 +24,8 @@ export function useVibes(userFamilyId: string, currentUserId: string) {
 
             if (data) {
                 // @ts-expect-error - Types inference issue with manual schema
-                const me = data.find((p) => p.id === currentUserId)
-                const partner = data.find((p) => p.id !== currentUserId)
+                const me = data.find((p: any) => p.id === currentUserId) as any
+                const partner = data.find((p: any) => p.id !== currentUserId) as any
 
                 if (me?.current_vibe) setMyVibe(me.current_vibe)
                 if (partner?.current_vibe) setPartnerVibe(partner.current_vibe)
