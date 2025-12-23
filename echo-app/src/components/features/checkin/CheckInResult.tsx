@@ -121,12 +121,14 @@ export function CheckInResult({ checkinId, familyId, topic, onDismiss }: CheckIn
         return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
-    const handleTimerAction = async (action: 'start' | 'reset') => {
+    const handleTimerAction = async (action: 'start' | 'pause' | 'reset') => {
         setLoading(true)
         try {
-            await updateCheckInTimer(checkinId, action)
-            // Immediately fetch state fallback in case realtime is slow
-            await fetchCheckin()
+            await updateCheckInTimer(checkinId, familyId, action)
+            // if reset, clear local finished state
+            if (action === 'reset') {
+                setHasNotifiedFinish(false)
+            }
         } catch (e: any) {
             console.error('Timer action failed:', e)
             alert(`Failed to action timer: ${e.message}`)

@@ -157,23 +157,28 @@ async function generateCheckInTopic(familyId: string, checkinId: string) {
     revalidatePath('/')
 }
 
-export async function updateCheckInTimer(checkinId: string, action: 'start' | 'pause' | 'reset') {
+export async function updateCheckInTimer(checkinId: string, familyId: string, action: 'start' | 'pause' | 'reset') {
     const supabase = await createClient()
 
     let updateData: any = {}
 
     if (action === 'start') {
         updateData = { timer_started_at: new Date().toISOString() }
+
+        // Start Server-Side Fallback Timer
+        // This ensures notification is sent even if client disconnects/sleeps.
+        // Race condition is handled by notifyConnectionCompleteAction's optimistic locking.
+        setTimeout(async () => {
+            console.log('[ServerTimer] Timeout reached explicitly for:', checkinId)
+            try {
+                // Now we have familyId properly passed
+                await notifyConnectionCompleteAction(checkinId, familyId)
+            } catch (e) {
+                console.error('[ServerTimer] Failed to trigger notification:', e)
+            }
+        }, 15 * 60 * 1000)
+
     } else if (action === 'pause') {
-        // Pausing is tricky with just a start time. 
-        // For MVP, "Pause" just clears the start time (Stop). 
-        // To support "Resume", we'd need 'elapsed_seconds' stored.
-        // Let's stick to Simple Timer: Start = Set Time, Pause/Reset = Clear Time.
-        // Actually, let's treat "Pause" as Stop/Reset for now to keep it simple as requested "one clock".
-        // Or better: store "timer_target_end_at"? 
-        // Let's stick to the plan: start sets `timer_started_at`.
-        // If we want "Pause", we need to know how much time passed.
-        // Let's just implement Start (Restart) and Stop (Reset) for now.
         updateData = { timer_started_at: null }
     } else if (action === 'reset') {
         updateData = { timer_started_at: null }
